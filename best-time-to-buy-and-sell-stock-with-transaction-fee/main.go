@@ -1,26 +1,22 @@
 package best_time_to_buy_and_sell_stock_with_transaction_fee
 
-/*
-O(len(prices)^2)
-*/
 func maxProfit(prices []int, fee int) int {
 	if len(prices) < 2 {
 		return 0
 	}
-	dp := make([]int, len(prices)+1)
-	for i := len(prices) - 1; i >= 0; i-- {
-		pi := 0
-		for j := i + 1; j < len(prices); j++ {
-			pj := prices[j] - prices[i] + dp[j+1]
-			if pj > pi {
-				pi = pj
-			}
+	dp := make([]int, len(prices))
+	max := -prices[0] - fee
+	for i := 1; i < len(dp); i++ {
+		pi := prices[i]
+		dpi := pi + max
+		prev := dp[i-1]
+		if dpi < prev {
+			dpi = prev
 		}
-		pi -= fee
-		if pi < dp[i+1] {
-			pi = dp[i+1]
+		dp[i] = dpi
+		if maxi := prev - pi - fee; maxi > max {
+			max = maxi
 		}
-		dp[i] = pi
 	}
-	return dp[0]
+	return dp[len(dp)-1]
 }
